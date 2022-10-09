@@ -1,0 +1,58 @@
+<%- include('../../partials/head') %> <%- include('../../partials/navbar') %>
+
+<div class="container">
+  <h2 class="my-2">Categorias</h2>
+  <a href="/admin/categories/new" class="btn btn-success"
+    >Criar Nova Categoria</a
+  >
+  <hr />
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Slug</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% categories.forEach(category => { %>
+      <tr>
+        <th><%= category.id %></th>
+        <th><%= category.title %></th>
+        <th><%= category.slug %></th>
+        <th class="d-flex">
+          <a href="/admin/categories/edit/<%= category.id %>" class="btn btn-warning">Editar</a>
+          <form
+            action="/categories/delete"
+            method="post"
+            class="mx-2"
+            onsubmit="confirmarDelecao(event)"
+          >
+            <input type="hidden" value="<%= category.id %>" name="id" />
+            <button class="btn btn-danger">Excluir</button>
+          </form>
+        </th>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<script>
+  function confirmarDelecao(event) {
+    event.preventDefault();
+    const decision = confirm('Você quer deletar esta categoria')
+
+    if(decision) {
+      return event.target.submit()
+    } 
+
+    return
+
+  }
+</script>
+
+
+<%- include('../../partials/foot') %>
+
