@@ -1,5 +1,9 @@
 const express = require("express");
 const connection = require("./database/database");
+
+const CategoriesController = require("./categories/CategoriesController");
+const ArticlesController = require("./articles/ArticlesController");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -13,6 +17,9 @@ connection
   .authenticate()
   .then(() => console.log("Conectado ao banco de dados"))
   .catch((erro) => console.log(`Ocorreu um erro: ${erro}`));
+
+app.use("/", CategoriesController);
+app.use("/", ArticlesController);
 
 app.get("/", (req, res) => {
   res.render("index");
