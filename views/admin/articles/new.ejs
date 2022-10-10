@@ -7,7 +7,7 @@
       <h2 class="mt-2">Novo Artigo</h2>
     </div>
     <div class="card-body">
-      <form action="/categories/save" method="post">
+      <form action="/articles/save" method="post">
         <input
           type="text"
           name="title"
@@ -21,7 +21,7 @@
           id="article"
         ></textarea>
         <label for="categoria">Categoria: </label>
-        <select  class="form-control" id="categoria">
+        <select name="category" class="form-control" id="categoria">
           <% categories.forEach((category) => { %>
             <option value="<%= category.id %>"><%= category.title %></option>
           <% }) %>
