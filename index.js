@@ -25,7 +25,27 @@ app.use("/", CategoriesController);
 app.use("/", ArticlesController);
 
 app.get("/", (req, res) => {
-  res.render("index");
+  Article.findAll({ order: [["id", "DESC"]] }).then((articles) => {
+    Category.findAll().then((categories) => {
+      res.render("index", { articles, categories });
+    });
+  });
+});
+
+app.get("/:slug", (req, res) => {
+  const slug = req.params.slug;
+
+  Article.findOne({ where: { slug: slug } })
+    .then((article) => {
+      if (article != undefined) {
+        Category.findAll().then((categories) => {
+          res.render("article", { article, categories });
+        });
+      } else {
+        res.redirect("/");
+      }
+    })
+    .catch((error) => res.redirect("/"));
 });
 
 const porta = 8080;
