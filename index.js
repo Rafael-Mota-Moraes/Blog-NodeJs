@@ -48,6 +48,34 @@ app.get("/:slug", (req, res) => {
     .catch((error) => res.redirect("/"));
 });
 
+app.get("/category/:slug", (req, res) => {
+  const { slug } = req.params;
+
+  Category.findOne({
+    where: {
+      slug: slug
+    },
+    include: [
+      {
+        model: Article
+      }
+    ]
+  })
+    .then((category) => {
+      if (category != undefined) {
+        Category.findAll().then((categories) => {
+          res.render("index", {
+            articles: category.articles,
+            categories: categories
+          });
+        });
+      } else {
+        res.redirect("/");
+      }
+    })
+    .catch((err) => res.redirect("/"));
+});
+
 const porta = 8080;
 
 app.listen(porta, () => {
