@@ -50,4 +50,48 @@ router.post("/articles/delete", (req, res) => {
   }
 });
 
+router.get("/admin/articles/edit/:id", (req, res) => {
+  const { id } = req.params;
+  Article.findByPk(id)
+    .then((article) => {
+      if (article != null) {
+        Category.findAll().then((categories) => {
+          res.render("admin/articles/edit", {
+            categories: categories,
+            article: article
+          });
+        });
+      } else {
+        res.redirect("/");
+      }
+    })
+    .catch((error) => {
+      res.redirect("/");
+    });
+});
+
+router.post("/articles/update", (req, res) => {
+  const { id, title, body, category } = req.body;
+
+  Article.update(
+    {
+      title: title,
+      body: body,
+      categoryId: category,
+      slug: slugify(title)
+    },
+    {
+      where: {
+        id: id
+      }
+    }
+  )
+    .then(() => {
+      res.redirect("/admin/articles");
+    })
+    .catch(() => {
+      res.redirect("/");
+    });
+});
+
 module.exports = router;
