@@ -4,8 +4,9 @@ const slugify = require("slugify");
 const router = express.Router();
 const Category = require("../categories/Category");
 const Article = require("./Article");
+const adminAuth = require("../middlewares/adminAuth");
 
-router.get("/admin/articles", (req, res) => {
+router.get("/admin/articles", adminAuth, (req, res) => {
   Article.findAll({
     include: [{ model: Category }]
   }).then((articles) => {
@@ -13,13 +14,13 @@ router.get("/admin/articles", (req, res) => {
   });
 });
 
-router.get("/admin/articles/new", (req, res) => {
+router.get("/admin/articles/new", adminAuth, (req, res) => {
   Category.findAll().then((categories) => {
     res.render("admin/articles/new", { categories });
   });
 });
 
-router.post("/articles/save", (req, res) => {
+router.post("/articles/save", adminAuth, (req, res) => {
   const { title, body, category } = req.body;
 
   Article.create({
@@ -32,7 +33,7 @@ router.post("/articles/save", (req, res) => {
   });
 });
 
-router.post("/articles/delete", (req, res) => {
+router.post("/articles/delete", adminAuth, (req, res) => {
   const { id } = req.body;
 
   if (id != undefined) {
@@ -50,7 +51,7 @@ router.post("/articles/delete", (req, res) => {
   }
 });
 
-router.get("/admin/articles/edit/:id", (req, res) => {
+router.get("/admin/articles/edit/:id", adminAuth, (req, res) => {
   const { id } = req.params;
   Article.findByPk(id)
     .then((article) => {
@@ -70,7 +71,7 @@ router.get("/admin/articles/edit/:id", (req, res) => {
     });
 });
 
-router.post("/articles/update", (req, res) => {
+router.post("/articles/update", adminAuth, (req, res) => {
   const { id, title, body, category } = req.body;
 
   Article.update(

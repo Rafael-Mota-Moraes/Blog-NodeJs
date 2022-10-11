@@ -1,8 +1,11 @@
 const express = require("express");
+const session = require("express-session");
+
 const connection = require("./database/database");
 
 const CategoriesController = require("./categories/CategoriesController");
 const ArticlesController = require("./articles/ArticlesController");
+const UsersController = require("./user/UserController");
 
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
@@ -10,6 +13,15 @@ const Category = require("./categories/Category");
 const app = express();
 
 app.set("view engine", "ejs");
+
+app.use(
+  session({
+    secret: "dfuiosdhufhudiohuj0=pfgkdsiojoijmfsdikoj",
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24
+    }
+  })
+);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -23,6 +35,23 @@ connection
 
 app.use("/", CategoriesController);
 app.use("/", ArticlesController);
+app.use("/", UsersController);
+
+app.get("/session", (req, res) => {
+  req.session.user = {
+    username: "Rafael",
+    email: "teste@teste.com.br",
+    id: 1
+  };
+
+  res.send("Sessão gerada!");
+});
+
+app.get("/leitura", (req, res) => {
+  res.json({
+    user: req.session.user
+  });
+});
 
 app.get("/", (req, res) => {
   Article.findAll({ order: [["id", "DESC"]], limit: 4 }).then((articles) => {
